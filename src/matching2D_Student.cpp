@@ -18,7 +18,7 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
     }
     else if (matcherType.compare("MAT_FLANN") == 0)
     {
-        // ...
+        matcher = cv::FlannBasedMatcher::create();
     }
 
     // perform matching task
@@ -29,9 +29,17 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
     }
     else if (selectorType.compare("SEL_KNN") == 0)
     { // k nearest neighbors (k=2)
-
-        // ...
+        vector<vector<cv::DMatch>> knn_matches;
+        matcher->knnMatch(descSource, descRef, knn_matches, 2);
+        // implement the descriptor distance ratio test with t=0.8
+        const float threshold = 0.8f;
+        for (size_t i=0; i < knn_matches.size(); i++) {
+            if (knn_matches[i][0].distance < knn_matches[i][1].distance * threshold) {
+                matches.push_back(knn_matches[i][0]);
+            }
+        }
     }
+
 }
 
 // Use one of several types of state-of-art descriptors to uniquely identify keypoints
@@ -48,9 +56,24 @@ void descKeypoints(vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descr
 
         extractor = cv::BRISK::create(threshold, octaves, patternScale);
     }
+    else if (descriptorType.compare("BRIEF") == 0) {
+        extractor = cv::xfeatures2d::BriefDescriptorExtractor::create();
+    }
+    else if (descriptorType.compare("ORB") == 0) {
+        extractor = cv::ORB::create();
+    }
+    else if (descriptorType.compare("FREAK") == 0) {
+        extractor = cv::xfeatures2d::FREAK::create();
+    }
+    else if (descriptorType.compare("AKAZE") == 0) {
+        extractor = cv::AKAZE::create();
+    }
+    else if (descriptorType.compare("SIFT") == 0) {
+        //extractor = cv::SIFT::create();
+        extractor = cv::SIFT::create();
+    }
     else
     {
-
         //...
     }
 
