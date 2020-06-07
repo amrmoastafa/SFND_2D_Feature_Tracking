@@ -40,6 +40,9 @@ int main(int argc, const char *argv[])
     vector<DataFrame> dataBuffer; // list of data frames which are held in memory at the same time
     bool bVis = false;            // visualize results
 
+    // book-keeping for tasks MP7, 8, 9
+    vector<int> num_veh_kps;
+
     /* MAIN LOOP OVER ALL IMAGES */
 
     for (size_t imgIndex = 0; imgIndex <= imgEndIndex - imgStartIndex; imgIndex++)
@@ -72,7 +75,7 @@ int main(int argc, const char *argv[])
         }
 
         //// EOF STUDENT ASSIGNMENT
-        cout << "#1 : LOAD IMAGE INTO BUFFER done" << endl;
+        //cout << "#1 : LOAD IMAGE INTO BUFFER done" << endl;
 
         /* DETECT IMAGE KEYPOINTS */
 
@@ -110,19 +113,27 @@ int main(int argc, const char *argv[])
         // only keep keypoints on the preceding vehicle
         bool bFocusOnVehicle = true;
         cv::Rect vehicleRect(535, 180, 180, 150);
-        std::cout << "Total keypoints: " << keypoints.size() << std::endl;
+        //std::cout << "Total keypoints: " << keypoints.size() << std::endl;
         std::vector<cv::KeyPoint> veh_kps;
         if (bFocusOnVehicle)
         {
             // Remove keypoints outside of the vehicleRect
             for (auto it=keypoints.begin(); it != keypoints.end(); it++ ) {
-              if (!vehicleRect.contains(it->pt)) {
+              if (vehicleRect.contains(it->pt)) {
                 //keypoints.erase(it);
                 veh_kps.push_back(*it);
               }
             }
         }
         std::cout << "Keypoints on the vehicle: " << veh_kps.size() << std::endl;
+        // calculate distribution of neighborhood size
+        double average_size = 0;
+        for (auto kp : veh_kps) {
+            average_size += kp.size;
+        }
+        average_size /= veh_kps.size();
+        num_veh_kps.push_back(veh_kps.size());
+        std::cout << "Keypoints distribution of neighborhood size " << average_size << std::endl;
 
         //// EOF STUDENT ASSIGNMENT
 
@@ -143,7 +154,7 @@ int main(int argc, const char *argv[])
         // push keypoints and descriptor for current frame to end of data buffer
         //(dataBuffer.end() - 1)->keypoints = keypoints;
         (dataBuffer.end() - 1)->keypoints = veh_kps;
-        cout << "#2 : DETECT KEYPOINTS done" << endl;
+        //cout << "#2 : DETECT KEYPOINTS done" << endl;
 
         /* EXTRACT KEYPOINT DESCRIPTORS */
 
@@ -164,7 +175,7 @@ int main(int argc, const char *argv[])
         // push descriptors for current frame to end of data buffer
         (dataBuffer.end() - 1)->descriptors = descriptors;
 
-        cout << "#3 : EXTRACT DESCRIPTORS done" << endl;
+        //cout << "#3 : EXTRACT DESCRIPTORS done" << endl;
 
         if (dataBuffer.size() > 1) // wait until at least two images have been processed
         {
@@ -194,29 +205,37 @@ int main(int argc, const char *argv[])
             // store matches in current data frame
             (dataBuffer.end() - 1)->kptMatches = matches;
 
-            cout << "#4 : MATCH KEYPOINT DESCRIPTORS done" << endl;
+            //cout << "#4 : MATCH KEYPOINT DESCRIPTORS done" << endl;
 
             // visualize matches between current and previous image
             bVis = true;
             if (bVis)
             {
                 cv::Mat matchImg = ((dataBuffer.end() - 1)->cameraImg).clone();
+                /*
                 cv::drawMatches((dataBuffer.end() - 2)->cameraImg, (dataBuffer.end() - 2)->keypoints,
                                 (dataBuffer.end() - 1)->cameraImg, (dataBuffer.end() - 1)->keypoints,
                                 matches, matchImg,
                                 cv::Scalar::all(-1), cv::Scalar::all(-1),
                                 vector<char>(), cv::DrawMatchesFlags::DRAW_RICH_KEYPOINTS);
-
+                */
+                // the vehicle rect
+                cv::rectangle(matchImg,vehicleRect,cv::Scalar(255,255,255),1,20,0);
+                // the drawkeypoints
+                cv::Mat img_kps;
+                cv::drawKeypoints(matchImg, (dataBuffer.end() - 2)->keypoints, img_kps);
                 string windowName = "Matching keypoints between two camera images";
                 cv::namedWindow(windowName, 7);
-                cv::imshow(windowName, matchImg);
-                cout << "Press key to continue to next image" << endl;
-                cv::waitKey(0); // wait for key to be pressed
+                //cv::imshow(windowName, matchImg);
+                cv::imshow(windowName, img_kps);
+                //cout << "Press key to continue to next image" << endl;
+                cv::waitKey(1); // wait for key to be pressed
             }
             bVis = false;
         }
 
     } // eof loop over all images
+    for (int i : num_veh_kps) cout << " | " << i ;
 
     return 0;
 }
