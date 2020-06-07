@@ -95,7 +95,7 @@ Some combinations of detector and descriptor doesn't make sense, those results a
 | AKAZE| 51.55|53.93 |57.92|75.42|93.73|67.89|
 | SIFT| 68.54 |88.18|N/A|113.33|N/A|137.67|
 
-The top 3 detector/descriptor combinations are:
+The top 3 detector/descriptor combinations are found by evaluating the tables above.
 1. In terms of number of matched keypoints (More is better)
   1. BRISK/SIFT
   2. BRISK/BRIEF
@@ -104,4 +104,3 @@ The top 3 detector/descriptor combinations are:
   1. FAST/ORB
   2. FAST/BRIEF
   3. FAST/BRISK
-3. In terms of 
