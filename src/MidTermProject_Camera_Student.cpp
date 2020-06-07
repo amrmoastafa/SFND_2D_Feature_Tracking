@@ -42,6 +42,7 @@ int main(int argc, const char *argv[])
 
     // book-keeping for tasks MP7, 8, 9
     vector<int> num_veh_kps;
+    int num_matches;
 
     /* MAIN LOOP OVER ALL IMAGES */
 
@@ -181,7 +182,6 @@ int main(int argc, const char *argv[])
         {
 
             /* MATCH KEYPOINT DESCRIPTORS */
-
             vector<cv::DMatch> matches;
             //string matcherType = "MAT_BF";        // MAT_BF, MAT_FLANN
             string matcherType = "MAT_FLANN";        // MAT_BF, MAT_FLANN
@@ -200,6 +200,8 @@ int main(int argc, const char *argv[])
                              (dataBuffer.end() - 2)->descriptors, (dataBuffer.end() - 1)->descriptors,
                              matches, descriptorType, matcherType, selectorType);
 
+            // number of matches?
+            num_matches += matches.size();
             //// EOF STUDENT ASSIGNMENT
 
             // store matches in current data frame
@@ -236,6 +238,8 @@ int main(int argc, const char *argv[])
 
     } // eof loop over all images
     for (int i : num_veh_kps) cout << " | " << i ;
+    cout << endl;
+    cout << "number of matches: " << num_matches << endl;
 
     return 0;
 }

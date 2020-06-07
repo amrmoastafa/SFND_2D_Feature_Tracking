@@ -67,5 +67,28 @@ Count the number of keypoints on the preceding vehicle for all 10 images and tak
 
 ### MP.7 Performance Evaluation 2
 Count the number of matched keypoints for all 10 images using all possible combinations of detectors and descriptors. In the matching step, the BF approach is used with the descriptor distance ratio set to 0.8.
+
+Some combinations of detector and descriptor doesn't make sense, those results are N/A.
+
+| Detector,Descriptor | BRISK | BRIEF | ORB | FREAK | AKAZE | SIFT |
+| --- | --- | --- |--- |--- |--- |--- |
+| SHITOMASI | 686 |922|866|688|N/A|900|
+| HARRIS | 138|169 |164|134|N/A|167|
+| FAST | 638 |805|831|645|N/A|763|
+| BRISK | 1426 |1512|1379|1386|N/A|1529|
+| ORB | 678 |486|691|395|N/A|742|
+| AKAZE | 1020 |1169|1096|1002|1199|1176|
+| SIFT | 491 |695|N/A|492|N/A|759|
+
 ### MP.7 Performance Evaluation 3
 Log the time it takes for keypoint detection and descriptor extraction. The results must be entered into a spreadsheet and based on this data, the TOP3 detector / descriptor combinations must be recommended as the best choice for our purpose of detecting keypoints on vehicles.
+
+| Detector\Descriptor | BRISK | BRIEF | ORB | FREAK | AKAZE | SIFT |
+| --- | --- | --- |--- |--- |--- |--- |
+| SHITOMASI| 17.98 |21.38|18.8|52.4079|N/A| 31.82|
+| HARRIS | 13.28|14.50 |14.24|32.07| N/A| 22.31|
+| FAST| 3.98 |3.72 |3.12|22.91|N/A|14.72|
+| BRISK| 34.84 |33.42|40.72|54.59|N/A|54.73|
+| ORB| 5.82 |6.91|11.12|22.52|N/A|23.83|
+| AKAZE| 51.55|53.93 |57.92|75.42|93.73|67.89|
+| SIFT| 68.54 |88.18|N/A|113.33|N/A|137.67|
