@@ -96,11 +96,13 @@ Some combinations of detector and descriptor doesn't make sense, those results a
 | SIFT| 68.54 |88.18|N/A|113.33|N/A|137.67|
 
 The top 3 detector/descriptor combinations are found by evaluating the tables above.
-1. In terms of number of matched keypoints (More is better)
+
+In terms of number of matched keypoints (More is better)
   1. BRISK/SIFT
   2. BRISK/BRIEF
   3. BRISK/BRISK
-2. In terms of execution time (Small is better)
+
+In terms of execution time (Small is better)
   1. FAST/ORB
   2. FAST/BRIEF
   3. FAST/BRISK
